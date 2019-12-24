@@ -1,14 +1,15 @@
 import React from 'react';
+import { ToastContainer } from 'react-toastify';
 
 import GlobalStyle from './styles/global';
-
-import SignIn from './pages/SignIn';
+import Routes from './routes';
 
 function App() {
     return (
         <>
-            <SignIn />
+            <Routes />
             <GlobalStyle />
+            <ToastContainer autoClose={3000} />
         </>
     );
 }

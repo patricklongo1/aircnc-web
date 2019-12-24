@@ -1,9 +1,30 @@
-import React from 'react';
+/* eslint-disable react/forbid-prop-types */
+import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 
+import api from '../../services/api';
 import logo from '../../assets/logo.svg';
 import { Container, Content, Box } from './styles';
 
-export default function SignIn() {
+export default function SignIn({ history }) {
+    const [email, setEmail] = useState('');
+
+    async function handleSubmit(event) {
+        event.preventDefault();
+        try {
+            const response = await api.post('/sessions', {
+                email,
+            });
+            setEmail('');
+
+            const { _id } = response.data;
+            localStorage.setItem('user', _id);
+            history.push('dashboard');
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     return (
         <Container>
             <Content>
@@ -13,9 +34,14 @@ export default function SignIn() {
                         Ofereça <strong>spots</strong> para programadores, e
                         encontre <strong>talentos</strong> para sua empresa.
                     </p>
-                    <form>
+                    <form onSubmit={handleSubmit}>
                         <span>E-MAIL*</span>
-                        <input type="text" placeholder="Seu melhor e-mail" />
+                        <input
+                            type="text"
+                            placeholder="Seu melhor e-mail"
+                            onChange={event => setEmail(event.target.value)}
+                            value={email}
+                        />
                         <button type="submit">Entrar</button>
                     </form>
                 </Box>
@@ -23,3 +49,7 @@ export default function SignIn() {
         </Container>
     );
 }
+
+SignIn.propTypes = {
+    history: PropTypes.object.isRequired,
+};
