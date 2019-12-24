@@ -1,6 +1,7 @@
 /* eslint-disable react/forbid-prop-types */
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
+import { toast } from 'react-toastify';
 
 import api from '../../services/api';
 import logo from '../../assets/logo.svg';
@@ -12,14 +13,18 @@ export default function SignIn({ history }) {
     async function handleSubmit(event) {
         event.preventDefault();
         try {
-            const response = await api.post('/sessions', {
-                email,
-            });
-            setEmail('');
+            if (email.length <= 0) {
+                toast.error('Campo de email obrigatório');
+            } else {
+                const response = await api.post('/sessions', {
+                    email,
+                });
+                setEmail('');
 
-            const { _id } = response.data;
-            localStorage.setItem('user', _id);
-            history.push('dashboard');
+                const { _id } = response.data;
+                localStorage.setItem('user', _id);
+                history.push('dashboard');
+            }
         } catch (error) {
             console.log(error);
         }
@@ -37,7 +42,7 @@ export default function SignIn({ history }) {
                     <form onSubmit={handleSubmit}>
                         <span>E-MAIL*</span>
                         <input
-                            type="text"
+                            type="email"
                             placeholder="Seu melhor e-mail"
                             onChange={event => setEmail(event.target.value)}
                             value={email}
